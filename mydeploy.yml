@@ -1,0 +1,25 @@
+---
+- name: Deploy Java App
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install Java
+      apt:
+        name: openjdk-17-jdk
+        state: present
+        update_cache: yes
+
+    - name: Create app directory
+      file:
+        path: /opt/myapp
+        state: directory
+
+    - name: Copy JAR file
+      copy:
+        src: target/my-app-1.0-SNAPSHOT.jar
+        dest: /opt/myapp/my-app.jar
+
+    - name: Run the application
+      shell: |
+        nohup java -jar /opt/myapp/my-app.jar > /opt/myapp/app.log 2>&1 &
